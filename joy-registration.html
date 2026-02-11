@@ -1,0 +1,4298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Joy — Registration Builder</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-elevated: #FFFFFF;
+  --border: #E0E0E0;
+  --border-subtle: #F0F0F0;
+  --text-primary: #1A1A1A;
+  --text-secondary: #6C6C6C;
+  --text-tertiary: #8F8F8F;
+  --accent: #0054E1;
+  --accent-soft: #E8F0FF;
+  --accent-hover: #0043B8;
+  --tag-bridal: #8B5CF6;
+  --tag-bridal-soft: #F0EBFF;
+  --tag-vendor: #0EA5E9;
+  --tag-vendor-soft: #E8F4FD;
+  --tag-vip: #D97706;
+  --tag-vip-soft: #FDF4E7;
+  --tag-speaker: #059669;
+  --tag-speaker-soft: #E6F7F0;
+  --success: #34C759;
+  --success-soft: #EAFBEE;
+  --danger: #FF3B30;
+  --danger-soft: #FFEDED;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-full: 100px;
+  --shadow-sm: 0 0.5px 1px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-lg: 0 4px 20px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.04);
+  --shadow-xl: 0 8px 40px rgba(0,0,0,0.1), 0 2px 6px rgba(0,0,0,0.04);
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Type scale (builder UI) */
+  --text-xl: 1.125rem;   /* 18px — section headings */
+  --text-lg: 0.9375rem;  /* 15px — primary body, buttons, inputs */
+  --text-md: 0.8125rem;  /* 13px — labels, tabs, descriptions */
+  --text-sm: 0.75rem;    /* 12px — tertiary, metadata */
+  --text-xs: 0.6875rem;  /* 11px — chips, badges, micro labels */
+  --text-xxs: 0.625rem;  /* 10px — status chip */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+/* ─── APP SHELL ─── */
+.app {
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ─── HEADER ─── */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 20px 20px 18px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.header-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+}
+
+.header-event {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  color: var(--text-secondary);
+}
+
+.btn-icon:active { transform: scale(0.92); }
+
+.btn-icon svg { width: 18px; height: 18px; }
+
+/* ─── STATUS CHIP ─── */
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
+.status-chip.live {
+  color: #34C759;
+}
+
+.status-chip.draft {
+  color: var(--text-tertiary);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.status-chip.live .status-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── FORM MENU ─── */
+.form-menu {
+  position: absolute;
+  top: 64px;
+  right: 20px;
+  width: 260px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.05);
+  z-index: 110;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+  pointer-events: none;
+  transition: all 0.2s var(--ease-out);
+  overflow: hidden;
+}
+
+.form-menu.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.form-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.form-menu-item:hover {
+  background: var(--border-subtle);
+}
+
+.form-menu-item:active {
+  background: var(--border);
+}
+
+.form-menu-item.danger { color: var(--danger); }
+.form-menu-item.danger .form-menu-icon { color: var(--danger); }
+
+.form-menu-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.form-menu-icon svg { width: 17px; height: 17px; }
+
+.form-menu-text { flex: 1; }
+
+.form-menu-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.form-menu-desc {
+  display: block;
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.form-menu-item.danger .form-menu-desc { color: var(--danger); opacity: 0.7; }
+
+.form-menu-divider {
+  height: 1px;
+  background: var(--border-subtle);
+}
+
+/* ─── MODE TABS ─── */
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  background: #F0F0F0;
+  border-radius: var(--radius-full);
+  padding: 4px;
+  position: relative;
+}
+
+.mode-tabs-indicator {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  height: calc(100% - 8px);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: color 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  position: relative;
+  z-index: 1;
+}
+
+.mode-tab.active {
+  color: var(--text-primary);
+}
+
+.mode-tab svg { width: 15px; height: 15px; }
+
+/* ─── CONTENT AREA ─── */
+.content {
+  padding: 24px 20px 120px;
+  min-height: calc(100dvh - 120px);
+}
+
+.mode-panel {
+  display: none;
+  animation: fadeSlideUp 0.35s var(--ease-out);
+}
+
+.mode-panel.active { display: block; }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── FLOW VIEW ─── */
+.flow-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.flow-header h2 {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+}
+
+.flow-count {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+.question-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── QUESTION CARD ─── */
+.question-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  position: relative;
+  overflow: visible;
+}
+
+.question-card:hover {
+  border-color: var(--border);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.question-card:active {
+  transform: translateY(0px);
+  box-shadow: none;
+  background: var(--border-subtle);
+}
+
+.question-card.dragging {
+  opacity: 0;
+  pointer-events: none;
+  transform: none;
+  box-shadow: none;
+}
+
+.qc-handle {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  margin-top: 2px;
+  cursor: grab;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.qc-handle:hover {
+  color: var(--text-secondary);
+  background: var(--border-subtle);
+}
+
+.qc-handle:active {
+  cursor: grabbing;
+  color: var(--text-primary);
+}
+
+/* Drag and Drop */
+.drag-ghost {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0.92;
+  transform: scale(1.02);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  border-radius: var(--radius-lg);
+  transition: none;
+}
+
+.drag-placeholder {
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--accent-soft);
+  transition: height 0.2s var(--ease-out);
+  margin-bottom: 10px;
+}
+
+.qc-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.qc-handle svg { width: 16px; height: 16px; }
+
+.qc-number {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.qc-info { flex: 1; min-width: 0; }
+
+.qc-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.qc-type {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.qc-type svg { width: 13px; height: 13px; }
+
+.qc-branch-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: 6px;
+  color: #9A7B4F;
+  position: relative;
+  cursor: default;
+}
+
+.qc-branch-indicator svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+/* Branch hover preview */
+.qc-branch-preview {
+  position: fixed;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  min-width: 260px;
+  max-width: 320px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.06);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s var(--ease-out);
+  z-index: 9999;
+  transform: translateY(4px);
+}
+
+.qc-branch-preview.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.branch-preview-title {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.branch-preview-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+}
+
+.branch-preview-row + .branch-preview-row {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.branch-preview-option {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.branch-preview-arrow {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.branch-preview-arrow svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.branch-preview-dest {
+  font-size: 0.6875rem;
+  color: #9A7B4F;
+  font-weight: 500;
+  flex-shrink: 0;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qc-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding-left: 36px;
+}
+
+/* ─── CHIPS ─── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.chip svg { width: 11px; height: 11px; }
+
+.chip-everyone {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.chip-tag {
+  background: var(--tag-bridal-soft);
+  color: var(--tag-bridal);
+}
+
+.chip-tag.vendor {
+  background: var(--tag-vendor-soft);
+  color: var(--tag-vendor);
+}
+
+.chip-tag.vip {
+  background: var(--tag-vip-soft);
+  color: var(--tag-vip);
+}
+
+.chip-tag.speaker {
+  background: var(--tag-speaker-soft);
+  color: var(--tag-speaker);
+}
+
+.chip-required {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.chip-exclude {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ─── PINNED CARDS ─── */
+.pinned-section {
+  margin-bottom: 32px;
+}
+
+.pinned-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.pinned-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+
+.pinned-card:hover {
+  border-color: var(--border);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.pinned-card:active {
+  transform: translateY(0);
+}
+
+.pinned-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pinned-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+}
+
+.pinned-card-icon svg { width: 18px; height: 18px; }
+
+.pinned-card-icon.rsvp-icon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.pinned-card-info { flex: 1; min-width: 0; }
+
+.pinned-card-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.pinned-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.pinned-card-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.pinned-card-chips {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.rsvp-toggle-wrap {
+  flex-shrink: 0;
+}
+
+.rsvp-detail {
+  transition: all 0.3s var(--ease-out);
+  overflow: hidden;
+}
+
+.rsvp-card.disabled .rsvp-detail {
+  max-height: 0;
+  margin: 0;
+  opacity: 0;
+}
+
+.rsvp-card:not(.disabled) .rsvp-detail {
+  max-height: 100px;
+  opacity: 1;
+}
+
+/* ─── ADD QUESTION BUTTON ─── */
+.add-question-btn {
+  width: 100%;
+  padding: 20px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.add-question-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.add-question-btn:active { transform: scale(0.98); }
+
+.add-question-btn svg { width: 20px; height: 20px; }
+
+/* ─── COVER/THANKS FIELDS ─── */
+.cover-fields {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.3s var(--ease-out);
+}
+
+.cover-fields.hidden {
+  opacity: 0;
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cover-emoji-input {
+  width: 64px !important;
+  height: 64px !important;
+  text-align: center;
+  font-size: 2rem !important;
+  border-radius: 50% !important;
+  background: var(--border-subtle) !important;
+  border: 2px dashed var(--text-tertiary) !important;
+  cursor: pointer;
+  padding: 0 !important;
+  line-height: 1 !important;
+  transition: all 0.15s;
+}
+
+.cover-emoji-input:focus {
+  border-color: var(--accent) !important;
+  border-style: solid !important;
+  background: var(--accent-soft) !important;
+}
+
+/* ─── PREVIEW BAR ─── */
+.preview-bar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  z-index: 90;
+  padding: 12px 20px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.preview-bar-inner {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-preview {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-preview:active { transform: scale(0.97); }
+
+.btn-preview svg { width: 18px; height: 18px; }
+
+.btn-primary {
+  flex: 1.3;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+
+/* ─── QUESTION EDITOR OVERLAY ─── */
+.editor-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease-out);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.editor-overlay.open {
+  transform: translateY(0);
+}
+
+.editor-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.editor-close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.editor-close:active { transform: scale(0.9); }
+
+.editor-close svg { width: 18px; height: 18px; }
+
+.editor-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.editor-save {
+  padding: 8px 18px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--text-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.editor-save:active { transform: scale(0.95); }
+
+.editor-body {
+  padding: 24px 20px;
+  padding-bottom: 60px;
+}
+
+/* ─── EDITOR SECTIONS ─── */
+.editor-section {
+  margin-bottom: 36px;
+}
+
+.section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.section-label .section-num {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  background: var(--text-primary);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.editor-field {
+  margin-bottom: 20px;
+}
+
+.editor-field label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.editor-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  background: var(--surface);
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.editor-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.editor-input::placeholder { color: var(--text-tertiary); }
+
+textarea.editor-input {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* ─── TYPE PICKER ─── */
+.type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.type-option {
+  padding: 12px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.type-option:active { transform: scale(0.96); }
+
+.type-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.type-option svg { width: 22px; height: 22px; color: var(--text-secondary); }
+
+.type-option.selected svg { color: var(--accent); }
+
+.type-option span {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.type-option.selected span { color: var(--accent); }
+
+/* ─── VISIBILITY PICKER ─── */
+.vis-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vis-option {
+  padding: 14px 16px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.vis-option:active { transform: scale(0.98); }
+
+.vis-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.vis-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.vis-option.selected .vis-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.vis-text { flex: 1; }
+
+.vis-text strong {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+.vis-text span {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* ─── TAG PICKER ─── */
+.tag-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 12px;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s var(--ease-out);
+}
+
+.tag-picker.show {
+  opacity: 1;
+  max-height: 400px;
+}
+
+.tag-pill {
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--border-subtle);
+  background: var(--surface);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.tag-pill:active { transform: scale(0.94); }
+
+.tag-pill.selected {
+  border-color: transparent;
+}
+
+.tag-pill[data-tag="bridal-party"].selected {
+  background: var(--tag-bridal-soft);
+  color: var(--tag-bridal);
+  border-color: var(--tag-bridal);
+}
+
+.tag-pill[data-tag="vendors"].selected {
+  background: var(--tag-vendor-soft);
+  color: var(--tag-vendor);
+  border-color: var(--tag-vendor);
+}
+
+.tag-pill[data-tag="vip"].selected {
+  background: var(--tag-vip-soft);
+  color: var(--tag-vip);
+  border-color: var(--tag-vip);
+}
+
+.tag-pill[data-tag="speakers"].selected {
+  background: var(--tag-speaker-soft);
+  color: var(--tag-speaker);
+  border-color: var(--tag-speaker);
+}
+
+/* ─── RULES SECTION ─── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.toggle-row:last-child { border-bottom: none; }
+
+.toggle-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.toggle-desc {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: 6px;
+}
+
+.toggle {
+  width: 48px;
+  height: 28px;
+  border-radius: 14px;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.3s var(--ease-out);
+  flex-shrink: 0;
+}
+
+.toggle.on { background: var(--text-primary); }
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.toggle.on::after { transform: translateX(20px); }
+
+/* ─── OPTIONS EDITOR ─── */
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-row input {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.option-row input:focus {
+  border-color: var(--accent);
+}
+
+.option-remove {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: transparent;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.option-remove:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.add-option-btn {
+  margin-top: 14px;
+  padding: 10px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.add-option-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── TYPE PICKER OVERLAY ─── */
+.type-picker-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.type-picker-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.type-picker-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+}
+
+.type-picker-sheet {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 430px;
+  background: var(--surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  padding: 20px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+  transform: translateY(100%);
+  transition: transform 0.4s var(--ease-out);
+}
+
+.type-picker-overlay.open .type-picker-sheet {
+  transform: translateY(0);
+}
+
+.type-picker-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin: 0 auto 16px;
+}
+
+/* Desktop: centered dialog */
+@media (min-width: 600px) {
+  .type-picker-overlay {
+    align-items: center;
+  }
+
+  .type-picker-sheet {
+    border-radius: var(--radius-xl);
+    max-width: 380px;
+    padding: 28px;
+    padding-bottom: 28px;
+    transform: translateY(24px);
+    opacity: 0;
+    transition: transform 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .type-picker-overlay.open .type-picker-sheet {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .type-picker-handle {
+    display: none;
+  }
+}
+
+.type-picker-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.type-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+}
+
+.type-picker-item {
+  padding: 16px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s var(--ease-out);
+}
+
+.type-picker-item:hover {
+  border-color: var(--border);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.type-picker-item:active {
+  transform: scale(0.94);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.type-picker-item .tpi-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.type-picker-item .tpi-icon svg { width: 18px; height: 18px; }
+
+.type-picker-item span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* ─── AUDIENCE PANEL ─── */
+.audience-section {
+  margin-bottom: 36px;
+}
+
+.audience-section h3 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.audience-section p {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  margin-bottom: 18px;
+  line-height: 1.5;
+}
+
+.tag-card {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.25s var(--ease-out);
+}
+
+.tag-card:hover {
+  border-color: var(--border);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.tag-card:active { transform: scale(0.98); }
+
+.tag-color {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+}
+
+.tag-card-info { flex: 1; }
+
+.tag-card-name {
+  font-weight: 500;
+  font-size: 0.9375rem;
+  margin-bottom: 5px;
+}
+
+.tag-card-count {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.tag-card-questions {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  background: var(--border-subtle);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+/* ─── VISIBILITY MAP ─── */
+.vis-map {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.vis-map-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vis-map-header label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.vis-map-select {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  background: var(--bg);
+  outline: none;
+  color: var(--text-primary);
+}
+
+.vis-map-body {
+  padding: 10px;
+}
+
+/* ─── DESIGN PANEL ─── */
+.design-section {
+  margin-bottom: 36px;
+}
+
+.design-section h3 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.color-swatches {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.color-swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.color-swatch.selected {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 3.5px var(--text-primary);
+}
+
+.color-swatch:active { transform: scale(0.92); }
+
+.font-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.font-option {
+  padding: 14px 16px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.font-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.font-option:active { transform: scale(0.98); }
+
+.font-option-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.font-option-preview {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+}
+
+.motion-slider-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.motion-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+  margin-bottom: 10px;
+}
+
+.motion-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+
+.motion-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+/* ─── SELECTED TAGS IN EDITOR ─── */
+.selected-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.selected-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.selected-tag-emoji {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.selected-tag-name {
+  color: var(--text-primary);
+}
+
+.selected-tag-remove {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.selected-tag-remove:hover {
+  color: var(--danger);
+}
+
+.selected-tags-empty {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  padding: 8px 0;
+}
+
+.edit-tags-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 10px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-tags-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ─── TAG SELECTOR DIALOG ─── */
+.tag-selector-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.tag-selector-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.tag-selector-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+}
+
+.tag-selector-dialog {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  transform: translateY(24px);
+  opacity: 0;
+  transition: transform 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+.tag-selector-overlay.open .tag-selector-dialog {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.tag-selector-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.tag-selector-title {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 500;
+}
+
+.tag-selector-done {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.tag-selector-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton-bar {
+  background: var(--border-subtle);
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.skeleton-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeleton-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.skeleton-tag-row:hover {
+  background: var(--border-subtle);
+}
+
+.skeleton-tag-row.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.skeleton-tag-emoji {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.skeleton-tag-name {
+  flex: 1;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.skeleton-tag-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.skeleton-tag-row.selected .skeleton-tag-check {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.skeleton-label {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  padding: 12px 0 4px;
+}
+
+/* ─── PREVIEW OVERLAY ─── */
+.preview-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--bg);
+  transform: translateY(100%);
+  transition: transform 0.45s var(--ease-out);
+  max-width: 430px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.preview-overlay.open {
+  transform: translateY(0);
+}
+
+.preview-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.preview-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.preview-close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.preview-close:active { transform: scale(0.9); }
+
+.preview-close svg { width: 18px; height: 18px; }
+
+.preview-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.preview-tag-select {
+  padding: 7px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  background: var(--surface);
+  outline: none;
+  color: var(--text-primary);
+}
+
+/* ─── PREVIEW FORM (TYPEFORM-STYLE) ─── */
+.preview-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-progress {
+  height: 3px;
+  background: var(--border-subtle);
+  position: relative;
+}
+
+.preview-progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 0 2px 2px 0;
+  transition: width 0.5s var(--ease-out);
+}
+
+.preview-slide-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.preview-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 28px;
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.5s var(--ease-out);
+  pointer-events: none;
+}
+
+.preview-slide.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.preview-slide.exit-up {
+  opacity: 0;
+  transform: translateY(-40px);
+}
+
+.preview-slide-number {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+.preview-slide-question {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  margin-bottom: 28px;
+  color: var(--text-primary);
+}
+
+.preview-slide-input {
+  width: 100%;
+  padding: 16px 0;
+  border: none;
+  border-bottom: 2px solid var(--border);
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  color: var(--text-primary);
+  background: transparent;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.preview-slide-input:focus {
+  border-bottom-color: var(--accent);
+}
+
+.preview-slide-input::placeholder { color: var(--text-tertiary); }
+
+.preview-slide-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-slide-option {
+  padding: 16px 18px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+}
+
+.preview-slide-option:active {
+  transform: scale(0.98);
+}
+
+.preview-slide-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.preview-slide-option-key {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.preview-slide-option.selected .preview-slide-option-key {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.preview-branch-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: #9A7B4F;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(154, 123, 79, 0.06);
+  border-radius: var(--radius-sm);
+}
+
+.preview-branch-hint strong {
+  color: #7A6440;
+}
+
+.preview-nav {
+  padding: 16px 28px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.preview-nav-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+}
+
+.preview-nav-btn:active { transform: scale(0.95); }
+
+.preview-nav-back {
+  background: var(--border-subtle);
+  color: var(--text-secondary);
+}
+
+.preview-nav-next {
+  background: var(--text-primary);
+  color: #fff;
+}
+
+.preview-nav-btn:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ─── COVER SLIDE ─── */
+.preview-cover {
+  text-align: center;
+}
+
+.preview-cover-emoji {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.preview-cover-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+}
+
+.preview-cover-subtitle {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.preview-cover-begin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: var(--radius-full);
+  background: var(--text-primary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preview-cover-begin:active { transform: scale(0.96); }
+
+.preview-cover-begin svg { width: 18px; height: 18px; }
+
+/* ─── THANK YOU SLIDE ─── */
+.preview-thanks {
+  text-align: center;
+}
+
+.preview-thanks-check {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--success-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--success);
+}
+
+.preview-thanks-check svg { width: 28px; height: 28px; }
+
+.preview-thanks-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.preview-thanks-text {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* ─── CONTACT FIELD ROWS ─── */
+.contact-field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.contact-field-row:last-of-type { border-bottom: none; }
+
+.contact-field-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.contact-field-info svg { color: var(--text-tertiary); }
+
+.contact-field-select {
+  padding: 6px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  background: var(--surface);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.contact-field-select:focus {
+  border-color: var(--accent);
+}
+
+/* ─── LOGIC SECTION IN EDITOR ─── */
+.logic-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  margin-bottom: 16px;
+}
+
+.route-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.route-row {
+  background: var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+}
+
+.route-row-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+
+.route-row-option {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.route-row-option .route-key {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.route-select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  background: var(--surface);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238F8F8F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.route-select:focus {
+  border-color: var(--accent);
+}
+
+.route-select option.route-warn {
+  color: var(--text-tertiary);
+}
+
+.route-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: var(--danger-soft);
+  border-radius: var(--radius-sm);
+  font-size: 0.6875rem;
+  color: var(--danger);
+  line-height: 1.4;
+}
+
+.route-warning svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* ─── PATH SIMULATOR ─── */
+
+/* Path step — each question the guest actually sees */
+.path-step {
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: var(--success-soft);
+  transition: all 0.2s var(--ease-out);
+}
+
+.path-step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--success);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.625rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.path-step-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.path-step-title {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.path-step-meta {
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+}
+
+.path-step-answer {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.path-step-answer-label {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.path-step-answer select {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-primary);
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.path-step-answer select:focus {
+  border-color: var(--accent);
+}
+
+/* Connector between steps */
+.path-connector {
+  display: flex;
+  align-items: center;
+  padding: 3px 0 3px 9px;
+  gap: 6px;
+}
+
+.path-connector-line {
+  width: 2px;
+  height: 14px;
+  border-radius: 1px;
+  background: var(--border);
+}
+
+.path-connector.branch .path-connector-line {
+  background: #E65100;
+}
+
+.path-connector-label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #E65100;
+}
+
+/* End state */
+.path-end {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--border-subtle);
+}
+
+.path-end-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.path-end-icon svg { width: 12px; height: 12px; }
+
+.path-end-text {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.path-end.branch-end {
+  background: #FFF3E0;
+  border: 1px dashed #E65100;
+}
+
+.path-end.branch-end .path-end-icon {
+  background: #E65100;
+}
+
+.path-end.branch-end .path-end-text {
+  color: #E65100;
+}
+
+/* Conflict step */
+.path-step.conflict {
+  background: var(--danger-soft);
+  border: 1px dashed var(--danger);
+}
+
+.path-step.conflict .path-step-num {
+  background: var(--danger);
+}
+
+.path-step.conflict .path-step-meta {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Branching step indicator */
+.path-step.branching {
+  border-left: none;
+}
+
+.path-branch-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6875rem;
+  color: #9A7B4F;
+  margin-top: 8px;
+}
+
+.path-branch-hint svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.path-branch-arrow {
+  color: var(--text-tertiary);
+}
+
+.path-branch-dest {
+  font-weight: 600;
+  color: #7A6440;
+}
+
+/* Summary line */
+.path-summary {
+  padding: 12px 16px;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-align: center;
+  border-top: 1px solid var(--border-subtle);
+  margin-top: 6px;
+}
+
+/* ─── VALIDATION BAR ─── */
+.validation-bar {
+  margin-top: 20px;
+  padding: 14px 16px;
+  background: var(--danger-soft);
+  border: 1px solid rgba(255, 59, 48, 0.15);
+  border-radius: var(--radius-md);
+  display: none;
+}
+
+.validation-bar.show { display: block; }
+
+.validation-bar-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--danger);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.validation-bar-title svg { width: 15px; height: 15px; }
+
+.validation-item {
+  font-size: 0.75rem;
+  color: var(--danger);
+  padding: 4px 0;
+  line-height: 1.4;
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.validation-item::before {
+  content: '•';
+  flex-shrink: 0;
+}
+
+/* ─── DELETE BUTTON ─── */
+.delete-question-btn {
+  width: 100%;
+  padding: 14px;
+  border: 1.5px solid var(--danger);
+  border-radius: var(--radius-md);
+  background: var(--danger-soft);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--danger);
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 12px;
+}
+
+.delete-question-btn:active {
+  transform: scale(0.98);
+  background: var(--danger);
+  color: #fff;
+}
+
+.delete-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border: 1.5px solid var(--danger);
+  border-radius: var(--radius-md);
+  background: var(--danger-soft);
+  margin-top: 12px;
+}
+
+.delete-confirm-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--danger);
+}
+
+.delete-confirm-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.delete-confirm-cancel,
+.delete-confirm-yes {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+}
+
+.delete-confirm-cancel {
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+.delete-confirm-yes {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* ─── EMPTY STATE ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-state-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--accent);
+}
+
+.empty-state-icon svg { width: 28px; height: 28px; }
+
+.empty-state h3 {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.empty-state p {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--text-primary);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 0;
+  transition: all 0.3s var(--ease-out);
+  z-index: 999;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title-group">
+        <div class="header-title">Registration</div>
+        <div class="header-event">
+          Riyadh Summit 2025
+          <span class="status-chip live" id="status-chip" onclick="event.stopPropagation()">
+            <span class="status-dot"></span>
+            Live
+          </span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-icon" title="More" onclick="toggleFormMenu(event)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Form menu dropdown -->
+    <div class="form-menu" id="form-menu">
+      <div class="form-menu-item" onclick="toggleFormStatus()">
+        <div class="form-menu-icon" id="form-menu-status-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+        </div>
+        <div class="form-menu-text">
+          <span class="form-menu-label" id="form-menu-status-label">Unpublish form</span>
+          <span class="form-menu-desc" id="form-menu-status-desc">Currently live and accepting responses</span>
+        </div>
+      </div>
+      <div class="form-menu-divider"></div>
+      <div class="form-menu-item" onclick="showToast('Form duplicated'); closeFormMenu();">
+        <div class="form-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </div>
+        <div class="form-menu-text">
+          <span class="form-menu-label">Duplicate form</span>
+          <span class="form-menu-desc">Create a copy of this registration</span>
+        </div>
+      </div>
+      <div class="form-menu-divider"></div>
+      <div class="form-menu-item danger" onclick="showToast('Delete coming soon'); closeFormMenu();">
+        <div class="form-menu-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </div>
+        <div class="form-menu-text">
+          <span class="form-menu-label">Delete form</span>
+        </div>
+      </div>
+    </div>
+    <div class="mode-tabs">
+      <div class="mode-tabs-indicator" id="tabs-indicator"></div>
+      <button class="mode-tab active" data-mode="flow" onclick="switchMode('flow')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        Flow
+      </button>
+      <button class="mode-tab" data-mode="audience" onclick="switchMode('audience')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Audience
+      </button>
+      <button class="mode-tab" data-mode="design" onclick="switchMode('design')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2H7a5 5 0 0 0-5 5v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5Z"/><path d="M2 12h20"/></svg>
+        Design
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <!-- FLOW PANEL -->
+    <div class="mode-panel active" id="panel-flow">
+      <!-- PINNED CARDS -->
+      <div class="pinned-section">
+        <div class="pinned-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+          Pinned
+        </div>
+
+        <!-- Contact Info Card -->
+        <div class="pinned-card" onclick="openContactEditor()">
+          <div class="pinned-card-top">
+            <div class="pinned-card-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="pinned-card-info">
+              <div class="pinned-card-title">Contact Information</div>
+              <div class="pinned-card-desc" id="contact-desc">Name, Email, Phone</div>
+            </div>
+            <svg class="pinned-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+          <div class="pinned-card-chips">
+            <span class="chip chip-everyone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Everyone</span>
+            <span class="chip chip-required">Always first</span>
+          </div>
+        </div>
+
+        <!-- RSVP Card -->
+        <div class="pinned-card rsvp-card" id="rsvp-card" onclick="openRsvpEditor()">
+          <div class="pinned-card-top">
+            <div class="pinned-card-icon rsvp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="pinned-card-info">
+              <div class="pinned-card-title">Attendance (RSVP)</div>
+              <div class="pinned-card-desc" id="rsvp-desc">Guests must RSVP. Best for invite-only events like weddings.</div>
+            </div>
+            <div class="rsvp-toggle-wrap" onclick="event.stopPropagation()">
+              <button class="toggle on" id="rsvp-toggle" onclick="toggleRsvp()"></button>
+            </div>
+          </div>
+          <div class="rsvp-detail" id="rsvp-detail">
+            <div class="pinned-card-chips">
+              <span class="chip chip-everyone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Everyone</span>
+              <span class="chip chip-required">Required</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CUSTOM QUESTIONS -->
+      <div class="flow-header">
+        <h2>Questions</h2>
+        <span class="flow-count" id="flow-count">3 questions</span>
+      </div>
+      <div class="question-list" id="question-list"></div>
+      <button class="add-question-btn" onclick="openTypePicker()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add question
+      </button>
+      <div class="validation-bar" id="validation-bar">
+        <div class="validation-bar-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Issues to fix before publishing
+        </div>
+        <div id="validation-items"></div>
+      </div>
+    </div>
+
+    <!-- AUDIENCE PANEL -->
+    <div class="mode-panel" id="panel-audience">
+      <div class="audience-section">
+        <h3>Path Simulator</h3>
+        <p>Walk through the registration form and simulate answers to see exactly which path guests take — including any branching logic.</p>
+        <div class="vis-map">
+          <div class="vis-map-body" id="vis-map-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DESIGN PANEL -->
+    <div class="mode-panel" id="panel-design">
+      <div class="design-section">
+        <h3>Theme Color</h3>
+        <div class="color-swatches">
+          <div class="color-swatch selected" style="background: #0054E1;" onclick="selectSwatch(this)" data-color="#0054E1"></div>
+          <div class="color-swatch" style="background: #18181B;" onclick="selectSwatch(this)" data-color="#18181B"></div>
+          <div class="color-swatch" style="background: #A78BFA;" onclick="selectSwatch(this)" data-color="#A78BFA"></div>
+          <div class="color-swatch" style="background: #F472B6;" onclick="selectSwatch(this)" data-color="#F472B6"></div>
+          <div class="color-swatch" style="background: #34D399;" onclick="selectSwatch(this)" data-color="#34D399"></div>
+          <div class="color-swatch" style="background: #FB923C;" onclick="selectSwatch(this)" data-color="#FB923C"></div>
+          <div class="color-swatch" style="background: #38BDF8;" onclick="selectSwatch(this)" data-color="#38BDF8"></div>
+          <div class="color-swatch" style="background: #FBBF24;" onclick="selectSwatch(this)" data-color="#FBBF24"></div>
+        </div>
+      </div>
+
+      <div class="design-section">
+        <h3>Typography</h3>
+        <div class="font-options">
+          <div class="font-option selected" onclick="selectFont(this, 'Inter')">
+            <span class="font-option-name">Inter</span>
+            <span class="font-option-preview" style="font-family: 'Inter', sans-serif;">Aa</span>
+          </div>
+          <div class="font-option" onclick="selectFont(this, 'system-ui')">
+            <span class="font-option-name">System (SF Pro)</span>
+            <span class="font-option-preview" style="font-family: -apple-system, system-ui, sans-serif;">Aa</span>
+          </div>
+          <div class="font-option" onclick="selectFont(this, 'Georgia')">
+            <span class="font-option-name">Georgia</span>
+            <span class="font-option-preview" style="font-family: Georgia, serif;">Aa</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-section">
+        <h3>Motion & Transitions</h3>
+        <div class="motion-slider-wrap">
+          <div class="motion-labels">
+            <span>Subtle</span>
+            <span>Expressive</span>
+          </div>
+          <input type="range" class="motion-slider" min="0" max="100" value="65">
+        </div>
+      </div>
+
+      <div class="design-section">
+        <h3>Cover Screen</h3>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Show cover</div>
+            <div class="toggle-desc">Welcome screen before questions begin</div>
+          </div>
+          <button class="toggle on" id="cover-toggle" onclick="toggleCover()"></button>
+        </div>
+        <div id="cover-fields" class="cover-fields">
+          <div class="editor-field">
+            <label>Emoji icon</label>
+            <input class="editor-input cover-emoji-input" id="cover-emoji" value="🌿" oninput="coverConfig.emoji = this.value" maxlength="2" placeholder="🎉">
+          </div>
+          <div class="editor-field">
+            <label>Title</label>
+            <input class="editor-input" id="cover-title" value="Riyadh Summit 2025" oninput="coverConfig.title = this.value">
+          </div>
+          <div class="editor-field">
+            <label>Subtitle</label>
+            <textarea class="editor-input" id="cover-subtitle" rows="2" style="resize: vertical; min-height: 56px;" oninput="coverConfig.subtitle = this.value">We'd love to know you'll be there. This takes about 2 minutes.</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-section">
+        <h3>Thank You Screen</h3>
+        <div class="toggle-row">
+          <div>
+            <div class="toggle-label">Show thank you</div>
+            <div class="toggle-desc">Confirmation after submission</div>
+          </div>
+          <button class="toggle on" id="thanks-toggle" onclick="toggleThanks()"></button>
+        </div>
+        <div id="thanks-fields" class="cover-fields">
+          <div class="editor-field">
+            <label>Title</label>
+            <input class="editor-input" id="thanks-title" value="You're all set" oninput="thanksConfig.title = this.value">
+          </div>
+          <div class="editor-field">
+            <label>Message</label>
+            <textarea class="editor-input" id="thanks-message" rows="3" style="resize: vertical; min-height: 72px;" oninput="thanksConfig.message = this.value">Thank you for registering. We'll send a confirmation to your email shortly.</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW BAR -->
+  <div class="preview-bar">
+    <div class="preview-bar-inner">
+      <button class="btn-preview" onclick="openPreview()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Preview
+      </button>
+      <button class="btn-primary" onclick="showToast('Changes saved ✓')">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUESTION EDITOR OVERLAY -->
+<div class="editor-overlay" id="editor-overlay">
+  <div class="editor-header">
+    <button class="editor-close" onclick="closeEditor()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <span class="editor-title" id="editor-title">Edit Question</span>
+    <button class="editor-save" onclick="saveQuestion()">Done</button>
+  </div>
+  <div class="editor-body" id="editor-body"></div>
+</div>
+
+<!-- TYPE PICKER OVERLAY -->
+<div class="type-picker-overlay" id="type-picker-overlay">
+  <div class="type-picker-backdrop" onclick="closeTypePicker()"></div>
+  <div class="type-picker-sheet">
+    <div class="type-picker-handle"></div>
+    <div class="type-picker-title">Add Question</div>
+    <div class="type-picker-grid">
+      <div class="type-picker-item" onclick="addQuestion('short-text')">
+        <div class="tpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="12" y1="14" x2="3" y2="14"/></svg></div>
+        <span>Short Text</span>
+      </div>
+      <div class="type-picker-item" onclick="addQuestion('long-text')">
+        <div class="tpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="10" x2="3" y2="10"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="15" y1="18" x2="3" y2="18"/></svg></div>
+        <span>Long Text</span>
+      </div>
+      <div class="type-picker-item" onclick="addQuestion('multiple-choice')">
+        <div class="tpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <span>Choice</span>
+      </div>
+      <div class="type-picker-item" onclick="addQuestion('email')">
+        <div class="tpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+        <span>Email</span>
+      </div>
+      <div class="type-picker-item" onclick="addQuestion('phone')">
+        <div class="tpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <span>Phone</span>
+      </div>
+      <div class="type-picker-item" onclick="addQuestion('dropdown')">
+        <div class="tpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <span>Dropdown</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BRANCH PREVIEW TOOLTIP -->
+<div class="qc-branch-preview" id="branch-preview"></div>
+
+<!-- PREVIEW OVERLAY -->
+<div class="preview-overlay" id="preview-overlay">
+  <div class="preview-header">
+    <div class="preview-header-left">
+      <button class="preview-close" onclick="closePreview()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <span class="preview-label">Preview</span>
+    </div>
+  </div>
+  <div class="preview-form" id="preview-form"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───
+const TYPE_LABELS = {
+  'short-text': 'Short Text',
+  'long-text': 'Paragraph',
+  'multiple-choice': 'Multiple Choice',
+  'email': 'Email',
+  'phone': 'Phone',
+  'dropdown': 'Dropdown',
+};
+
+const TYPE_ICONS = {
+  'short-text': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/></svg>',
+  'long-text': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="10" x2="3" y2="10"/><line x1="15" y1="14" x2="3" y2="14"/></svg>',
+  'multiple-choice': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>',
+  'email': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>',
+  'phone': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>',
+  'dropdown': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>',
+};
+
+let questions = [
+  {
+    id: 5,
+    title: 'Would you like livestream updates if you can\'t attend?',
+    type: 'multiple-choice',
+    options: ['Yes — email me updates and the link', 'No, no further updates'],
+    required: false,
+    branching: true,
+    routes: { 0: 'next', 1: 'end' },
+  },
+  {
+    id: 6,
+    title: 'Broadcast equipment details (for access and permits)',
+    type: 'long-text',
+    options: [],
+    required: false,
+    branching: false,
+    routes: {},
+  },
+  {
+    id: 7,
+    title: 'Select your preferred session track',
+    type: 'multiple-choice',
+    options: ['Business & Leadership', 'Technology & Innovation', 'Culture & Arts'],
+    required: false,
+    branching: false,
+    routes: {},
+  },
+];
+
+let nextId = 10;
+let pathSimAnswers = {}; // { questionId: optionIndex }
+let editingQuestionId = null;
+
+// ─── CONTACT FIELDS CONFIG ───
+let contactFields = {
+  name: { enabled: true, required: true, format: 'first-last' },
+  email: { enabled: true, required: true },
+  phone: { enabled: true, required: false },
+  address: { enabled: false, required: false },
+};
+
+// ─── RSVP CONFIG ───
+let rsvpEnabled = true;
+let rsvpConfig = {
+  question: 'Will you be joining us in Riyadh?',
+  options: ['Yes, I will attend in person', 'No, I cannot attend', 'Joining virtually'],
+};
+
+let showCover = true;
+let coverConfig = {
+  emoji: '🌿',
+  title: 'Riyadh Summit 2025',
+  subtitle: 'We\'d love to know you\'ll be there. This takes about 2 minutes.',
+};
+
+let showThanks = true;
+let thanksConfig = {
+  title: 'You\'re all set',
+  message: 'Thank you for registering. We\'ll send a confirmation to your email shortly.',
+};
+
+// ─── MODE SWITCHING ───
+const TAB_INDICES = { flow: 0, audience: 1, design: 2 };
+
+function moveIndicator(mode, animate = true) {
+  const indicator = document.getElementById('tabs-indicator');
+  const tabs = document.querySelectorAll('.mode-tab');
+  if (!indicator || !tabs.length) return;
+
+  const tabWidth = tabs[0].offsetWidth;
+  const gap = 4; // matches CSS gap
+  const idx = TAB_INDICES[mode] || 0;
+  const offset = idx * (tabWidth + gap);
+
+  indicator.style.width = tabWidth + 'px';
+  if (!animate) indicator.style.transition = 'none';
+  indicator.style.transform = `translateX(${offset}px)`;
+  if (!animate) {
+    indicator.offsetHeight; // force reflow
+    indicator.style.transition = '';
+  }
+}
+
+function switchMode(mode) {
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+  document.querySelectorAll('.mode-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(`panel-${mode}`).classList.add('active');
+
+  moveIndicator(mode);
+
+  if (mode === 'audience') {
+    updateVisMap();
+  }
+}
+
+// Init indicator on load
+window.addEventListener('DOMContentLoaded', () => {
+  renderQuestions();
+  moveIndicator('flow', false);
+});
+
+// Keep indicator aligned on resize
+window.addEventListener('resize', () => {
+  const active = document.querySelector('.mode-tab.active');
+  if (active) moveIndicator(active.dataset.mode, false);
+});
+
+// ─── HELPERS: BRANCHING ───
+function getActiveBranchCount(q) {
+  if (!q.branching) return 0;
+  return Object.values(q.routes).filter(v => v !== 'next').length;
+}
+
+function renderBranchingChip(q) {
+  const count = getActiveBranchCount(q);
+  if (count === 0) return '';
+  return '';
+}
+
+function renderBranchPreview(q) {
+  if (!q.options || !q.routes) return '';
+  const keys = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const rows = q.options.map((opt, i) => {
+    const route = q.routes[i] || 'next';
+    let destLabel = 'Next question';
+    if (route === 'end') {
+      destLabel = 'End form';
+    } else if (route !== 'next') {
+      const destQ = questions.find(x => x.id === Number(route));
+      destLabel = destQ ? destQ.title : 'Unknown';
+    }
+    return `<div class="branch-preview-row">
+      <span class="branch-preview-option">${keys[i] || i + 1}. ${escapeHtml(opt)}</span>
+      <span class="branch-preview-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      <span class="branch-preview-dest">${escapeHtml(destLabel)}</span>
+    </div>`;
+  }).join('');
+
+  return `<div class="branch-preview-title">If they answer…</div>${rows}`;
+}
+
+// ─── RENDER QUESTION LIST ───
+function renderQuestions() {
+  const list = document.getElementById('question-list');
+  const offset = 1 + (rsvpEnabled ? 1 : 0);
+
+  if (questions.length === 0) {
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <h3>No questions yet</h3>
+        <p>Add your first question to start building the registration form.</p>
+      </div>
+    `;
+  } else {
+    list.innerHTML = questions.map((q, i) => `
+      <div class="question-card" onclick="openEditor(${q.id})" data-id="${q.id}">
+        <div class="qc-top">
+          <div class="qc-handle" data-drag-handle>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+          </div>
+          <div class="qc-number">${offset + i + 1}</div>
+          <div class="qc-info">
+            <div class="qc-title">${q.title}</div>
+            <div class="qc-type">${TYPE_ICONS[q.type]} ${TYPE_LABELS[q.type]}${getActiveBranchCount(q) > 0 ? `<span class="qc-branch-indicator" data-qid="${q.id}" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 6a9 9 0 0 0 9 9h3"/></svg>Branching</span>` : ''}</div>
+          </div>
+        </div>
+        <div class="qc-bottom">
+          ${q.required ? '<span class="chip chip-required">Required</span>' : ''}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('flow-count').textContent = `${questions.length} question${questions.length !== 1 ? 's' : ''}`;
+  updateContactDesc();
+  runValidation();
+}
+
+function updateContactDesc() {
+  const active = [];
+  if (contactFields.name.enabled) active.push('Name');
+  if (contactFields.email.enabled) active.push('Email');
+  if (contactFields.phone.enabled) active.push('Phone');
+  if (contactFields.address.enabled) active.push('Address');
+  const desc = document.getElementById('contact-desc');
+  if (desc) desc.textContent = active.length ? active.join(', ') : 'No fields enabled';
+}
+
+// ─── DRAG AND DROP ───
+let dragState = null;
+
+function initDragHandles() {
+  const list = document.getElementById('question-list');
+
+  list.addEventListener('pointerdown', (e) => {
+    const handle = e.target.closest('[data-drag-handle]');
+    if (!handle) return;
+
+    e.preventDefault();
+    const card = handle.closest('.question-card');
+    if (!card) return;
+
+    const cardId = Number(card.dataset.id);
+    const rect = card.getBoundingClientRect();
+    const listRect = list.getBoundingClientRect();
+
+    // Create ghost
+    const ghost = card.cloneNode(true);
+    ghost.className = 'question-card drag-ghost';
+    ghost.style.width = rect.width + 'px';
+    ghost.style.left = rect.left + 'px';
+    ghost.style.top = rect.top + 'px';
+    document.body.appendChild(ghost);
+
+    // Create placeholder
+    const placeholder = document.createElement('div');
+    placeholder.className = 'drag-placeholder';
+    placeholder.style.height = rect.height + 'px';
+
+    const fromIdx = questions.findIndex(q => q.id === cardId);
+    card.classList.add('dragging');
+    card.parentNode.insertBefore(placeholder, card);
+
+    dragState = {
+      ghost, placeholder, card, fromIdx, cardId,
+      offsetY: e.clientY - rect.top,
+      offsetX: e.clientX - rect.left,
+      currentIdx: fromIdx,
+    };
+
+    document.body.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
+  });
+
+  document.addEventListener('pointermove', (e) => {
+    if (!dragState) return;
+    const { ghost, offsetY, offsetX } = dragState;
+
+    ghost.style.left = (e.clientX - offsetX) + 'px';
+    ghost.style.top = (e.clientY - offsetY) + 'px';
+
+    // Find drop target
+    const cards = Array.from(list.querySelectorAll('.question-card:not(.dragging)'));
+    let targetIdx = dragState.fromIdx;
+
+    for (let i = 0; i < cards.length; i++) {
+      const r = cards[i].getBoundingClientRect();
+      const midY = r.top + r.height / 2;
+      if (e.clientY < midY) {
+        targetIdx = i;
+        break;
+      }
+      targetIdx = i + 1;
+    }
+
+    // Adjust for original position
+    if (targetIdx > dragState.fromIdx) targetIdx = Math.min(targetIdx, questions.length - 1);
+
+    if (targetIdx !== dragState.currentIdx) {
+      dragState.currentIdx = targetIdx;
+
+      // Move placeholder
+      const allItems = Array.from(list.children).filter(c => !c.classList.contains('dragging'));
+      if (targetIdx >= allItems.length) {
+        list.appendChild(dragState.placeholder);
+      } else {
+        list.insertBefore(dragState.placeholder, allItems[targetIdx]);
+      }
+    }
+  });
+
+  document.addEventListener('pointerup', () => {
+    if (!dragState) return;
+    const { ghost, placeholder, card, fromIdx, currentIdx } = dragState;
+
+    // Reorder
+    if (fromIdx !== currentIdx) {
+      const [moved] = questions.splice(fromIdx, 1);
+      questions.splice(currentIdx > fromIdx ? currentIdx : currentIdx, 0, moved);
+    }
+
+    ghost.remove();
+    placeholder.remove();
+    card.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    dragState = null;
+
+    renderQuestions();
+    if (fromIdx !== currentIdx) showToast('Question reordered');
+  });
+}
+
+// Init drag once on load
+document.addEventListener('DOMContentLoaded', initDragHandles);
+
+// ─── RSVP TOGGLE ───
+function toggleRsvp() {
+  rsvpEnabled = !rsvpEnabled;
+  const toggle = document.getElementById('rsvp-toggle');
+  const card = document.getElementById('rsvp-card');
+  const desc = document.getElementById('rsvp-desc');
+  toggle.classList.toggle('on', rsvpEnabled);
+  card.classList.toggle('disabled', !rsvpEnabled);
+  desc.textContent = rsvpEnabled
+    ? 'Guests must RSVP. Best for invite-only events like weddings.'
+    : 'Open registration. Anyone who submits is added to your guest list.';
+  renderQuestions();
+  showToast(rsvpEnabled ? 'Attendance question enabled' : 'Attendance question disabled');
+}
+
+// ─── CONTACT EDITOR ───
+function openContactEditor() {
+  editingQuestionId = 'contact';
+  document.getElementById('editor-title').textContent = 'Contact Information';
+
+  const cf = contactFields;
+  const body = document.getElementById('editor-body');
+  body.innerHTML = `
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">1</span> Fields</div>
+      <p style="font-size:0.8125rem; color:var(--text-tertiary); margin-bottom:16px; line-height:1.5;">Configure which contact details to collect from all guests. These fields always appear first.</p>
+
+      <div class="contact-field-row">
+        <div class="contact-field-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Name</span>
+        </div>
+        <span style="font-size:0.8125rem; color:var(--text-tertiary); font-weight:500;">Always required</span>
+      </div>
+
+      <div class="contact-field-row">
+        <div class="contact-field-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          <span>Email address</span>
+        </div>
+        <select class="contact-field-select" onchange="updateContactField('email', this.value)">
+          <option value="required" ${cf.email.required ? 'selected' : ''}>Required</option>
+          <option value="optional" ${cf.email.enabled && !cf.email.required ? 'selected' : ''}>Optional</option>
+          <option value="disabled" ${!cf.email.enabled ? 'selected' : ''}>Disabled</option>
+        </select>
+      </div>
+
+      <div class="contact-field-row">
+        <div class="contact-field-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          <span>Mobile phone</span>
+        </div>
+        <select class="contact-field-select" onchange="updateContactField('phone', this.value)">
+          <option value="required" ${cf.phone.required ? 'selected' : ''}>Required</option>
+          <option value="optional" ${cf.phone.enabled && !cf.phone.required ? 'selected' : ''}>Optional</option>
+          <option value="disabled" ${!cf.phone.enabled ? 'selected' : ''}>Disabled</option>
+        </select>
+      </div>
+
+      <div class="contact-field-row">
+        <div class="contact-field-info">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Mailing address</span>
+        </div>
+        <select class="contact-field-select" onchange="updateContactField('address', this.value)">
+          <option value="required" ${cf.address.required ? 'selected' : ''}>Required</option>
+          <option value="optional" ${cf.address.enabled && !cf.address.required ? 'selected' : ''}>Optional</option>
+          <option value="disabled" ${!cf.address.enabled ? 'selected' : ''}>Disabled</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">2</span> Visibility</div>
+      <div style="padding:14px 16px; background:var(--border-subtle); border-radius:var(--radius-md); display:flex; align-items:center; gap:10px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="color:var(--text-tertiary); flex-shrink:0;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span style="font-size:0.8125rem; color:var(--text-secondary);">Contact fields are always shown to <strong>everyone</strong> and cannot be reordered.</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('editor-overlay').classList.add('open');
+}
+
+function updateContactField(field, value) {
+  contactFields[field].enabled = value !== 'disabled';
+  contactFields[field].required = value === 'required';
+  updateContactDesc();
+}
+
+// ─── RSVP EDITOR ───
+function openRsvpEditor() {
+  if (!rsvpEnabled) return;
+  editingQuestionId = 'rsvp';
+  document.getElementById('editor-title').textContent = 'Attendance (RSVP)';
+
+  const body = document.getElementById('editor-body');
+  body.innerHTML = `
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">1</span> Question</div>
+      <div class="editor-field">
+        <label>Ask guests</label>
+        <input class="editor-input" id="rsvp-question" value="${escapeHtml(rsvpConfig.question)}" placeholder="e.g., Will you be attending?">
+      </div>
+      <div class="editor-field">
+        <label>Response options</label>
+        <div class="options-list" id="rsvp-options-list">
+          ${rsvpConfig.options.map((opt, i) => `
+            <div class="option-row">
+              <input value="${escapeHtml(opt)}" placeholder="Option ${i + 1}" onchange="rsvpConfig.options[${i}] = this.value">
+              ${rsvpConfig.options.length > 2 ? `<button class="option-remove" onclick="rsvpConfig.options.splice(${i}, 1); openRsvpEditor();">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>` : ''}
+            </div>
+          `).join('')}
+        </div>
+        <button class="add-option-btn" onclick="rsvpConfig.options.push('Option ' + (rsvpConfig.options.length + 1)); openRsvpEditor();">+ Add option</button>
+      </div>
+    </div>
+
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">2</span> Behavior</div>
+      <div style="padding:14px 16px; background:var(--border-subtle); border-radius:var(--radius-md);">
+        <span style="font-size:0.8125rem; color:var(--text-secondary); line-height:1.5;">Every guest in your list must respond to this question. Their attendance status syncs directly to your guest list so you can track who's coming and who's not. Best for invite-only events like weddings, private dinners, or fixed attendee conferences. For open registration where submitting the form means attending, turn this off.</span>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('editor-overlay').classList.add('open');
+}
+
+// ─── QUESTION EDITOR ───
+function openEditor(id) {
+  editingQuestionId = id;
+  const q = questions.find(x => x.id === id);
+  if (!q) return;
+
+  document.getElementById('editor-title').textContent = 'Edit Question';
+
+  const body = document.getElementById('editor-body');
+  body.innerHTML = `
+    <!-- SECTION 1: ASK -->
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">1</span> Ask</div>
+      <div class="editor-field">
+        <label>Question</label>
+        <input class="editor-input" id="eq-title" value="${escapeHtml(q.title)}" placeholder="Type your question…">
+      </div>
+      <div class="editor-field">
+        <label>Type</label>
+        <div class="type-grid">
+          ${Object.keys(TYPE_LABELS).map(t => `
+            <div class="type-option ${q.type === t ? 'selected' : ''}" onclick="selectType(this, '${t}')">
+              ${TYPE_ICONS[t]}
+              <span>${TYPE_LABELS[t]}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      ${['multiple-choice', 'dropdown'].includes(q.type) ? renderOptionsEditor(q) : ''}
+    </div>
+
+    <!-- SECTION 2: RULES -->
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">2</span> Rules</div>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-label">Required</div>
+          <div class="toggle-desc">Guest must answer to continue</div>
+        </div>
+        <button class="toggle ${q.required ? 'on' : ''}" id="eq-required" onclick="this.classList.toggle('on')"></button>
+      </div>
+    </div>
+
+    ${['multiple-choice', 'dropdown'].includes(q.type) ? renderLogicSection(q) : ''}
+
+    <button class="delete-question-btn" onclick="confirmDeleteQuestion(${q.id})">Delete question</button>
+  `;
+
+  document.getElementById('editor-overlay').classList.add('open');
+}
+
+function renderOptionsEditor(q) {
+  return `
+    <div class="editor-field" id="options-editor">
+      <label>Options</label>
+      <div class="options-list" id="options-list">
+        ${(q.options || []).map((opt, i) => `
+          <div class="option-row">
+            <input value="${escapeHtml(opt)}" placeholder="Option ${i + 1}" onchange="updateOption(${i}, this.value)">
+            <button class="option-remove" onclick="removeOption(${i})">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+        `).join('')}
+      </div>
+      <button class="add-option-btn" onclick="addOption()">+ Add option</button>
+    </div>
+  `;
+}
+
+function selectType(el, type) {
+  document.querySelectorAll('.type-option').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (q) {
+    q.type = type;
+    // Re-render options if needed
+    const existing = document.getElementById('options-editor');
+    if (['multiple-choice', 'dropdown'].includes(type)) {
+      if (!existing) {
+        if (q.options.length === 0) q.options = ['Option 1', 'Option 2'];
+        const field = document.createElement('div');
+        field.className = 'editor-field';
+        field.id = 'options-editor';
+        field.innerHTML = `<label>Options</label>` + renderOptionsListHtml(q);
+        document.querySelector('.type-grid').parentElement.after(field);
+      }
+    } else {
+      if (existing) existing.remove();
+    }
+  }
+}
+
+function renderOptionsListHtml(q) {
+  return `
+    <div class="options-list" id="options-list">
+      ${(q.options || []).map((opt, i) => `
+        <div class="option-row">
+          <input value="${escapeHtml(opt)}" placeholder="Option ${i+1}" onchange="updateOption(${i}, this.value)">
+          <button class="option-remove" onclick="removeOption(${i})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      `).join('')}
+    </div>
+    <button class="add-option-btn" onclick="addOption()">+ Add option</button>
+  `;
+}
+
+function updateOption(idx, value) {
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (q) q.options[idx] = value;
+}
+
+function removeOption(idx) {
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (q && q.options.length > 1) {
+    q.options.splice(idx, 1);
+    // Clean up routes — remove this index and shift higher indices down
+    const newRoutes = {};
+    Object.entries(q.routes).forEach(([key, val]) => {
+      const k = Number(key);
+      if (k < idx) newRoutes[k] = val;
+      else if (k > idx) newRoutes[k - 1] = val;
+      // k === idx is removed
+    });
+    q.routes = newRoutes;
+    openEditor(editingQuestionId);
+  }
+}
+
+function addOption() {
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (q) {
+    q.options.push(`Option ${q.options.length + 1}`);
+    openEditor(editingQuestionId);
+  }
+}
+
+// ─── LOGIC / BRANCHING SECTION ───
+function renderLogicSection(q) {
+  const keys = ['A', 'B', 'C', 'D', 'E', 'F'];
+  const currentQIdx = questions.indexOf(q);
+
+  const routeRows = (q.options || []).map((opt, i) => {
+    const currentRoute = q.routes[i] || 'next';
+    const destOptions = buildDestinationOptions(q, currentRoute, currentQIdx);
+
+    return `
+      <div class="route-row">
+        <div class="route-row-option">
+          <span class="route-key">${keys[i] || i + 1}</span>
+          ${escapeHtml(opt)}
+        </div>
+        <select class="route-select" onchange="updateRoute(${i}, this.value)">
+          ${destOptions}
+        </select>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="editor-section">
+      <div class="section-label"><span class="section-num">3</span> Logic</div>
+      <div class="logic-toggle-row">
+        <div>
+          <div class="toggle-label">Enable branching</div>
+          <div class="toggle-desc">Route guests to different questions based on their answer</div>
+        </div>
+        <button class="toggle ${q.branching ? 'on' : ''}" id="eq-branching" onclick="toggleBranching()"></button>
+      </div>
+      <div id="route-list-container" style="${q.branching ? '' : 'display:none'}">
+        <div class="route-list">
+          ${routeRows}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function buildDestinationOptions(sourceQ, currentRoute, currentQIdx) {
+  let html = `<option value="next" ${currentRoute === 'next' ? 'selected' : ''}>→ Next question</option>`;
+  html += `<option value="end" ${currentRoute === 'end' ? 'selected' : ''}>⏹ End form (thank you)</option>`;
+
+  // Show all other questions as jump targets
+  questions.forEach((q, i) => {
+    if (q.id === sourceQ.id) return; // Can't route to self
+    const label = `Q${i + 1}: ${q.title}`;
+    const truncated = label.length > 50 ? label.substring(0, 47) + '…' : label;
+    const isSelected = currentRoute == q.id;
+    html += `<option value="${q.id}" ${isSelected ? 'selected' : ''}>${truncated}</option>`;
+  });
+
+  return html;
+}
+
+
+function toggleBranching() {
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (!q) return;
+  q.branching = !q.branching;
+  document.getElementById('eq-branching').classList.toggle('on', q.branching);
+  const container = document.getElementById('route-list-container');
+  if (container) container.style.display = q.branching ? '' : 'none';
+  if (!q.branching) q.routes = {};
+}
+
+function updateRoute(optIdx, value) {
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (!q) return;
+  q.routes[optIdx] = value;
+  // Re-render to show/hide warnings
+  openEditor(editingQuestionId);
+}
+
+function saveQuestion() {
+  // Handle special pinned card editors
+  if (editingQuestionId === 'contact') {
+    closeEditor();
+    renderQuestions();
+    showToast('Contact fields saved');
+    return;
+  }
+  if (editingQuestionId === 'rsvp') {
+    const qInput = document.getElementById('rsvp-question');
+    if (qInput) rsvpConfig.question = qInput.value || 'Will you be attending?';
+    closeEditor();
+    showToast('RSVP settings saved');
+    return;
+  }
+
+  const q = questions.find(x => x.id === editingQuestionId);
+  if (!q) { closeEditor(); return; }
+
+  q.title = document.getElementById('eq-title').value || 'Untitled question';
+  q.required = document.getElementById('eq-required').classList.contains('on');
+
+  // Type already set via selectType
+
+  closeEditor();
+  renderQuestions();
+  showToast('Question saved');
+}
+
+function closeEditor() {
+  document.getElementById('editor-overlay').classList.remove('open');
+  editingQuestionId = null;
+}
+
+function confirmDeleteQuestion(id) {
+  const btn = document.querySelector('.delete-question-btn');
+  if (!btn) return;
+  btn.outerHTML = `
+    <div class="delete-confirm">
+      <span class="delete-confirm-text">Delete this question?</span>
+      <div class="delete-confirm-actions">
+        <button class="delete-confirm-cancel" onclick="openEditor(${id})">Cancel</button>
+        <button class="delete-confirm-yes" onclick="deleteQuestion(${id})">Delete</button>
+      </div>
+    </div>
+  `;
+}
+
+function deleteQuestion(id) {
+  questions = questions.filter(q => q.id !== id);
+  // Clean up any routes pointing to the deleted question
+  questions.forEach(q => {
+    if (!q.branching) return;
+    Object.entries(q.routes).forEach(([key, val]) => {
+      if (Number(val) === id) q.routes[key] = 'next';
+    });
+  });
+  closeEditor();
+  renderQuestions();
+  showToast('Question deleted');
+}
+
+// ─── TYPE PICKER ───
+function openTypePicker() {
+  document.getElementById('type-picker-overlay').classList.add('open');
+}
+
+function closeTypePicker() {
+  document.getElementById('type-picker-overlay').classList.remove('open');
+}
+
+function addQuestion(type) {
+  const q = {
+    id: nextId++,
+    title: '',
+    type: type,
+    options: ['multiple-choice', 'dropdown'].includes(type) ? ['Option 1', 'Option 2'] : [],
+    required: false,
+    branching: false,
+    routes: {},
+  };
+  questions.push(q);
+  closeTypePicker();
+  renderQuestions();
+
+  // Auto-open editor
+  setTimeout(() => openEditor(q.id), 200);
+}
+
+// ─── AUDIENCE PANEL ───
+function updateVisMap() {
+  const body = document.getElementById('vis-map-body');
+
+  // Walk through the form exactly as a guest would experience it
+  const path = []; // { type: 'step'|'end', question?, stepNum?, isBranch? }
+  let stepNum = 1;
+
+  // Step 1: Contact Info (always)
+  path.push({ type: 'step', title: 'Contact Information', meta: 'Name, Email, Phone', stepNum: stepNum++, fixed: true });
+
+  // Step 2: RSVP (if enabled)
+  if (rsvpEnabled) {
+    path.push({ type: 'step', title: rsvpConfig.question, meta: 'Attendance', stepNum: stepNum++, fixed: true,
+      hasOptions: true, options: rsvpConfig.options, qId: 'rsvp' });
+  }
+
+  // Walk custom questions following branches
+  let walkIdx = 0;
+  const visited = new Set();
+  let prevWasBranch = false;
+
+  while (walkIdx < questions.length && !visited.has(walkIdx)) {
+    visited.add(walkIdx);
+    const q = questions[walkIdx];
+
+    const hasBranch = q.branching && getActiveBranchCount(q) > 0;
+    const hasOptions = ['multiple-choice', 'dropdown'].includes(q.type) && q.options && q.options.length > 0;
+    const selectedAnswer = pathSimAnswers[q.id] !== undefined ? pathSimAnswers[q.id] : 0;
+
+    let branchDest = '';
+    if (hasBranch) {
+      const rd = q.routes[selectedAnswer] || 'next';
+      if (rd === 'end') {
+        branchDest = 'End form';
+      } else if (rd === 'next') {
+        // Find next question
+        const nextIdx = walkIdx + 1;
+        branchDest = nextIdx < questions.length ? questions[nextIdx].title : 'Thank you screen';
+      } else {
+        const destQ = questions.find(x => x.id === Number(rd));
+        branchDest = destQ ? destQ.title : 'Unknown';
+      }
+    }
+
+    path.push({
+      type: 'step',
+      title: q.title || 'Untitled',
+      meta: TYPE_LABELS[q.type] + (hasBranch ? ' · <span style="color:#9A7B4F">Branching</span>' : ''),
+      stepNum: stepNum++,
+      hasOptions: hasOptions,
+      options: hasOptions ? q.options : null,
+      qId: q.id,
+      selectedAnswer: selectedAnswer,
+      isBranch: prevWasBranch,
+      hasBranch: hasBranch,
+      branchDest: branchDest,
+    });
+
+    prevWasBranch = false;
+
+    // Follow branch
+    if (hasBranch) {
+      const routeDest = q.routes[selectedAnswer];
+      if (routeDest && routeDest !== 'next') {
+        if (routeDest === 'end') {
+          path.push({ type: 'end', reason: 'branch', isBranch: true });
+          break;
+        }
+        const destQ = questions.find(x => x.id === Number(routeDest));
+        if (destQ) {
+          const destIdx = questions.indexOf(destQ);
+          prevWasBranch = true;
+          walkIdx = destIdx;
+          continue;
+        }
+      }
+    }
+
+    walkIdx++;
+  }
+
+  // If we walked to the end naturally, add end marker
+  if (path.length > 0 && path[path.length - 1].type === 'step') {
+    path.push({ type: 'end', reason: 'natural' });
+  }
+
+  // Render the path
+  const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+  let html = '';
+  const totalSteps = path.filter(p => p.type === 'step').length;
+
+  path.forEach((item, idx) => {
+    // Connector before this item (except first)
+    if (idx > 0 && item.type !== 'end') {
+      if (item.isBranch) {
+        html += `<div class="path-connector branch"><div class="path-connector-line"></div><span class="path-connector-label">Branched</span></div>`;
+      } else {
+        html += `<div class="path-connector"><div class="path-connector-line"></div></div>`;
+      }
+    }
+
+    if (item.type === 'step') {
+      const answerHtml = item.hasOptions ? `
+        <div class="path-step-answer">
+          <span class="path-step-answer-label">Answer:</span>
+          <select onchange="setPathAnswer(${typeof item.qId === 'string' ? `'${item.qId}'` : item.qId}, parseInt(this.value))">
+            ${item.options.map((opt, i) => `
+              <option value="${i}" ${i === (item.selectedAnswer || 0) ? 'selected' : ''}>${escapeHtml(opt)}</option>
+            `).join('')}
+          </select>
+        </div>
+      ` : '';
+
+      html += `
+        <div class="path-step${item.hasBranch ? ' branching' : ''}">
+          <div class="path-step-num">${item.stepNum}</div>
+          <div class="path-step-content">
+            <div class="path-step-title">${escapeHtml(item.title)}</div>
+            <div class="path-step-meta">${item.meta}</div>
+            ${answerHtml}
+            ${item.hasBranch ? `<div class="path-branch-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 6a9 9 0 0 0 9 9h3"/></svg>Goes to <span class="path-branch-arrow">→</span> <span class="path-branch-dest">${escapeHtml(item.branchDest)}</span></div>` : ''}
+          </div>
+        </div>
+      `;
+    } else if (item.type === 'end') {
+      if (item.reason === 'branch') {
+        html += `<div class="path-connector branch"><div class="path-connector-line"></div><span class="path-connector-label">Branch end</span></div>`;
+        html += `
+          <div class="path-end branch-end">
+            <div class="path-end-icon">${checkSvg}</div>
+            <div class="path-end-text">Form ends here (thank you screen)</div>
+          </div>
+        `;
+      } else {
+        html += `<div class="path-connector"><div class="path-connector-line"></div></div>`;
+        html += `
+          <div class="path-end">
+            <div class="path-end-icon">${checkSvg}</div>
+            <div class="path-end-text">Thank you screen</div>
+          </div>
+        `;
+      }
+    }
+  });
+
+  // Summary
+  html += `<div class="path-summary">${totalSteps} step${totalSteps !== 1 ? 's' : ''} in this path</div>`;
+
+  body.innerHTML = html;
+}
+
+function setPathAnswer(qId, optIdx) {
+  pathSimAnswers[qId] = optIdx;
+  updateVisMap();
+}
+
+// ─── VALIDATION ───
+function runValidation() {
+  // Validation placeholder - can be extended for other checks
+  const bar = document.getElementById('validation-bar');
+  bar.classList.remove('show');
+}
+
+// ─── DESIGN PANEL ───
+function selectSwatch(el) {
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  showToast('Theme updated');
+}
+
+function selectFont(el, font) {
+  document.querySelectorAll('.font-option').forEach(f => f.classList.remove('selected'));
+  el.classList.add('selected');
+  showToast('Typography updated');
+}
+
+// ─── PREVIEW ───
+let previewSlideIdx = 0;
+let previewQuestions = [];
+let previewAnswers = {}; // { questionId: optionIndex }
+
+// ─── COVER & THANKS TOGGLES ───
+function toggleCover() {
+  showCover = !showCover;
+  document.getElementById('cover-toggle').classList.toggle('on', showCover);
+  document.getElementById('cover-fields').classList.toggle('hidden', !showCover);
+}
+
+function toggleThanks() {
+  showThanks = !showThanks;
+  document.getElementById('thanks-toggle').classList.toggle('on', showThanks);
+  document.getElementById('thanks-fields').classList.toggle('hidden', !showThanks);
+}
+
+// ─── PREVIEW ───
+function openPreview() {
+  document.getElementById('preview-overlay').classList.add('open');
+  previewSlideIdx = 0;
+  previewAnswers = {};
+  renderPreview();
+}
+
+function closePreview() {
+  document.getElementById('preview-overlay').classList.remove('open');
+}
+
+function renderPreview() {
+  previewQuestions = [];
+
+  // Contact fields (always shown)
+  const enabledFields = [];
+  if (contactFields.name.enabled) enabledFields.push({ title: 'What\'s your name?', type: 'short-text', placeholder: 'First and last name' });
+  if (contactFields.email.enabled) enabledFields.push({ title: 'Email address', type: 'email', placeholder: 'name@example.com' });
+  if (contactFields.phone.enabled) enabledFields.push({ title: 'Mobile phone', type: 'phone', placeholder: '+1 (555) 000-0000' });
+  if (contactFields.address.enabled) enabledFields.push({ title: 'Mailing address', type: 'short-text', placeholder: 'Your address' });
+  enabledFields.forEach(f => previewQuestions.push(f));
+
+  // RSVP (if enabled)
+  if (rsvpEnabled) {
+    previewQuestions.push({
+      title: rsvpConfig.question,
+      type: 'multiple-choice',
+      options: rsvpConfig.options,
+    });
+  }
+
+  // Custom questions - follow branching logic
+  let walkIdx = 0;
+  const visited = new Set();
+  while (walkIdx < questions.length && !visited.has(walkIdx)) {
+    visited.add(walkIdx);
+    const q = questions[walkIdx];
+
+    previewQuestions.push({ ...q, _isBranching: q.branching && getActiveBranchCount(q) > 0 });
+
+    // Follow branch
+    if (q.branching && getActiveBranchCount(q) > 0) {
+      const selectedAnswer = previewAnswers[q.id] !== undefined ? previewAnswers[q.id] : null;
+      if (selectedAnswer !== null) {
+        const routeDest = q.routes[selectedAnswer];
+        if (routeDest === 'end') break;
+        if (routeDest && routeDest !== 'next') {
+          const destQ = questions.find(x => x.id === Number(routeDest));
+          if (destQ) {
+            walkIdx = questions.indexOf(destQ);
+            continue;
+          }
+        }
+      }
+    }
+
+    walkIdx++;
+  }
+
+  previewSlideIdx = Math.min(previewSlideIdx, previewQuestions.length);
+  renderPreviewSlides();
+}
+
+function renderPreviewSlides() {
+  const form = document.getElementById('preview-form');
+
+  // Build slide sequence: [cover?] + questions + [thanks?]
+  const hasCover = showCover;
+  const hasThanks = showThanks;
+  const coverOffset = hasCover ? 1 : 0;
+  const totalSlides = coverOffset + previewQuestions.length + (hasThanks ? 1 : 0);
+  const thanksIdx = coverOffset + previewQuestions.length;
+
+  const progressPct = totalSlides <= 1 ? 100 :
+    previewSlideIdx === 0 ? 0 :
+    previewSlideIdx >= totalSlides - 1 ? 100 :
+    (previewSlideIdx / (totalSlides - 1)) * 100;
+
+  let slides = '';
+
+  // Cover slide
+  if (hasCover) {
+    slides += `
+      <div class="preview-slide ${previewSlideIdx === 0 ? 'active' : (previewSlideIdx > 0 ? 'exit-up' : '')}">
+        <div class="preview-cover">
+          <div class="preview-cover-emoji">${coverConfig.emoji}</div>
+          <div class="preview-cover-title">${escapeHtml(coverConfig.title)}</div>
+          <div class="preview-cover-subtitle">${escapeHtml(coverConfig.subtitle)}</div>
+          <button class="preview-cover-begin" onclick="previewNext()">
+            Begin
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  // Question slides
+  previewQuestions.forEach((q, i) => {
+    const slideIdx = i + coverOffset;
+    let stateClass = '';
+    if (slideIdx === previewSlideIdx) stateClass = 'active';
+    else if (slideIdx < previewSlideIdx) stateClass = 'exit-up';
+
+    let inputHtml = '';
+    if (['short-text', 'email', 'phone'].includes(q.type)) {
+      const placeholder = q.placeholder || (q.type === 'email' ? 'name@example.com' : q.type === 'phone' ? '+1 (555) 000-0000' : 'Type your answer…');
+      inputHtml = `<input class="preview-slide-input" placeholder="${placeholder}">`;
+    } else if (q.type === 'long-text') {
+      inputHtml = `<textarea class="preview-slide-input" placeholder="Type your answer…" rows="3" style="resize:none; min-height:80px;"></textarea>`;
+    } else if (['multiple-choice', 'dropdown'].includes(q.type)) {
+      const keys = ['A', 'B', 'C', 'D', 'E', 'F'];
+      const selectedOpt = q.id ? previewAnswers[q.id] : undefined;
+      inputHtml = `<div class="preview-slide-options">${(q.options || []).map((opt, oi) => `
+        <div class="preview-slide-option ${selectedOpt === oi ? 'selected' : ''}" onclick="selectPreviewOption(${q.id || 0}, ${oi}, this)">
+          <span class="preview-slide-option-key">${keys[oi] || oi + 1}</span>
+          ${escapeHtml(opt)}
+        </div>
+      `).join('')}</div>`;
+      if (q._isBranching) {
+        let destLabel = '';
+        if (selectedOpt !== undefined && q.routes) {
+          const dest = q.routes[selectedOpt];
+          if (dest === 'end') destLabel = 'End form';
+          else if (dest === 'next' || !dest) destLabel = '';
+          else {
+            const destQ = questions.find(x => x.id === Number(dest));
+            if (destQ) destLabel = destQ.title;
+          }
+        }
+        if (destLabel) {
+          inputHtml += `<div class="preview-branch-hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 6a9 9 0 0 0 9 9h3"/></svg>Goes to → <strong>${escapeHtml(destLabel)}</strong></div>`;
+        }
+      }
+    }
+
+    slides += `
+      <div class="preview-slide ${stateClass}">
+        <div class="preview-slide-number">Question ${i + 1} of ${previewQuestions.length}</div>
+        <div class="preview-slide-question">${q.title || 'Untitled question'}</div>
+        ${inputHtml}
+      </div>
+    `;
+  });
+
+  // Thank you slide
+  if (hasThanks) {
+    slides += `
+      <div class="preview-slide ${previewSlideIdx === thanksIdx ? 'active' : ''}">
+        <div class="preview-thanks">
+          <div class="preview-thanks-check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="preview-thanks-title">${escapeHtml(thanksConfig.title)}</div>
+          <div class="preview-thanks-text">${escapeHtml(thanksConfig.message)}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Determine button labels
+  const isAtEnd = previewSlideIdx >= totalSlides - 1;
+  const isAtStart = previewSlideIdx === 0;
+  const nextLabel = hasThanks && previewSlideIdx === thanksIdx - 1 ? 'Submit' : 'Next';
+
+  form.innerHTML = `
+    <div class="preview-progress"><div class="preview-progress-fill" style="width: ${progressPct}%"></div></div>
+    <div class="preview-slide-container">${slides}</div>
+    <div class="preview-nav">
+      <button class="preview-nav-btn preview-nav-back" onclick="previewBack()" ${isAtStart ? 'disabled' : ''}>Back</button>
+      <button class="preview-nav-btn preview-nav-next" onclick="previewNext()" ${isAtEnd ? 'disabled' : ''}>${nextLabel}</button>
+    </div>
+  `;
+}
+
+function selectPreviewOption(qId, optIdx, el) {
+  // Deselect siblings
+  el.parentElement.querySelectorAll('.preview-slide-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  if (qId) {
+    previewAnswers[qId] = optIdx;
+    // Re-render to show branch hint and recalculate path
+    renderPreview();
+  }
+}
+
+function previewNext() {
+  const hasCover = showCover;
+  const hasThanks = showThanks;
+  const coverOffset = hasCover ? 1 : 0;
+  const totalSlides = coverOffset + previewQuestions.length + (hasThanks ? 1 : 0);
+  if (previewSlideIdx < totalSlides - 1) {
+    previewSlideIdx++;
+    renderPreview(); // Re-walk the branch path
+  }
+}
+
+function previewBack() {
+  if (previewSlideIdx > 0) {
+    previewSlideIdx--;
+    renderPreview(); // Re-walk the branch path
+  }
+}
+
+// ─── UTILITIES ───
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 2000);
+}
+
+// ─── FORM MENU ───
+let formLive = true;
+
+function toggleFormMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById('form-menu');
+  menu.classList.toggle('open');
+}
+
+function closeFormMenu() {
+  document.getElementById('form-menu').classList.remove('open');
+}
+
+function toggleFormStatus() {
+  formLive = !formLive;
+  const chip = document.getElementById('status-chip');
+  const label = document.getElementById('form-menu-status-label');
+  const desc = document.getElementById('form-menu-status-desc');
+
+  if (formLive) {
+    chip.className = 'status-chip live';
+    chip.innerHTML = '<span class="status-dot"></span> Live';
+    label.textContent = 'Unpublish form';
+    desc.textContent = 'Currently live and accepting responses';
+  } else {
+    chip.className = 'status-chip draft';
+    chip.innerHTML = '<span class="status-dot"></span> Draft';
+    label.textContent = 'Publish form';
+    desc.textContent = 'Currently hidden from guests';
+  }
+
+  closeFormMenu();
+  showToast(formLive ? 'Form is live' : 'Form unpublished');
+}
+
+// Close menu on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.form-menu') && !e.target.closest('.btn-icon')) {
+    closeFormMenu();
+  }
+});
+
+// ─── BRANCH PREVIEW HOVER ───
+const branchPreview = document.getElementById('branch-preview');
+let branchHoverTimeout = null;
+
+document.addEventListener('mouseenter', (e) => {
+  if (!e.target || !e.target.closest) return;
+  const indicator = e.target.closest('.qc-branch-indicator');
+  if (!indicator) return;
+
+  clearTimeout(branchHoverTimeout);
+  const qid = Number(indicator.dataset.qid);
+  const q = questions.find(x => x.id === qid);
+  if (!q) return;
+
+  branchPreview.innerHTML = renderBranchPreview(q);
+
+  const rect = indicator.getBoundingClientRect();
+  let left = rect.left;
+  let top = rect.bottom + 8;
+
+  // Keep within viewport
+  branchPreview.style.left = '0px';
+  branchPreview.style.top = '0px';
+  branchPreview.classList.add('visible');
+
+  const pw = branchPreview.offsetWidth;
+  const ph = branchPreview.offsetHeight;
+
+  if (left + pw > window.innerWidth - 16) {
+    left = window.innerWidth - pw - 16;
+  }
+  if (left < 16) left = 16;
+
+  if (top + ph > window.innerHeight - 16) {
+    top = rect.top - ph - 8;
+  }
+
+  branchPreview.style.left = left + 'px';
+  branchPreview.style.top = top + 'px';
+}, true);
+
+document.addEventListener('mouseleave', (e) => {
+  if (!e.target || !e.target.closest) return;
+  const indicator = e.target.closest('.qc-branch-indicator');
+  if (!indicator) return;
+
+  branchHoverTimeout = setTimeout(() => {
+    branchPreview.classList.remove('visible');
+  }, 100);
+}, true);
+
+branchPreview.addEventListener('mouseenter', () => {
+  clearTimeout(branchHoverTimeout);
+});
+
+branchPreview.addEventListener('mouseleave', () => {
+  branchPreview.classList.remove('visible');
+});
+
+// ─── INIT ───
+// Handled by DOMContentLoaded in switchMode section
+</script>
+</body>
+</html>
