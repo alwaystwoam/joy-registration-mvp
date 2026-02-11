@@ -655,6 +655,20 @@ body {
   gap: 12px;
 }
 
+.pinned-card-number {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
 .pinned-card-icon {
   width: 36px;
   height: 36px;
@@ -2785,9 +2799,7 @@ textarea.editor-input {
         <!-- Contact Info Card -->
         <div class="pinned-card" onclick="openContactEditor()">
           <div class="pinned-card-top">
-            <div class="pinned-card-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
+            <div class="pinned-card-number">1</div>
             <div class="pinned-card-info">
               <div class="pinned-card-title">Contact Information</div>
               <div class="pinned-card-desc" id="contact-desc">Name, Email, Phone</div>
@@ -2802,9 +2814,7 @@ textarea.editor-input {
         <!-- RSVP Card -->
         <div class="pinned-card rsvp-card" id="rsvp-card" onclick="openRsvpEditor()">
           <div class="pinned-card-top">
-            <div class="pinned-card-icon rsvp-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
+            <div class="pinned-card-number" id="rsvp-number">2</div>
             <div class="pinned-card-info">
               <div class="pinned-card-title">Attendance (RSVP)</div>
               <div class="pinned-card-desc" id="rsvp-desc">Guests must RSVP. Best for invite-only events like weddings.</div>
