@@ -63,6 +63,7 @@ body {
   color: var(--text-primary);
   overflow-x: hidden;
   min-height: 100dvh;
+  line-height: 1.5;
 }
 
 /* ─── APP SHELL ─── */
@@ -238,6 +239,7 @@ body {
   font-size: 0.6875rem;
   color: var(--text-tertiary);
   margin-top: 4px;
+  line-height: 1.4;
 }
 
 .form-menu-item.danger .form-menu-desc { color: var(--danger); opacity: 0.7; }
@@ -456,6 +458,7 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
+  line-height: 1.5;
 }
 
 .qc-type svg { width: 13px; height: 13px; }
@@ -556,9 +559,6 @@ body {
   gap: 6px;
   flex-wrap: wrap;
   padding-left: 36px;
-}
-
-.qc-bottom:not(:empty) {
   margin-top: 14px;
 }
 
@@ -685,6 +685,7 @@ body {
 .pinned-card-desc {
   font-size: 0.75rem;
   color: var(--text-tertiary);
+  line-height: 1.5;
 }
 
 .pinned-card-chevron {
@@ -936,6 +937,7 @@ body {
   letter-spacing: 0.08em;
   color: var(--text-tertiary);
   margin-bottom: 16px;
+  line-height: 1.4;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -1165,6 +1167,7 @@ textarea.editor-input {
   font-size: 0.75rem;
   color: var(--text-tertiary);
   margin-top: 6px;
+  line-height: 1.5;
 }
 
 .toggle {
@@ -3210,9 +3213,7 @@ function renderQuestions() {
             <div class="qc-type">${TYPE_ICONS[q.type]} ${TYPE_LABELS[q.type]}${getActiveBranchCount(q) > 0 ? `<span class="qc-branch-indicator" data-qid="${q.id}" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M6 6a9 9 0 0 0 9 9h3"/></svg>Branching</span>` : ''}</div>
           </div>
         </div>
-        <div class="qc-bottom">
-          ${q.required ? '<span class="chip chip-required">Required</span>' : ''}
-        </div>
+${q.required ? '<div class="qc-bottom"><span class="chip chip-required">Required</span></div>' : ''}
       </div>
     `).join('');
   }
