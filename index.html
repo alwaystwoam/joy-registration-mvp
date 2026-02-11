@@ -2835,7 +2835,6 @@ textarea.editor-input {
       <!-- CUSTOM QUESTIONS -->
       <div class="flow-header">
         <h2>Questions</h2>
-        <span class="flow-count" id="flow-count">3 questions</span>
       </div>
       <div class="question-list" id="question-list"></div>
       <button class="add-question-btn" onclick="openTypePicker()">
@@ -3229,7 +3228,6 @@ ${q.required ? '<div class="qc-bottom"><span class="chip chip-required">Required
     `).join('');
   }
 
-  document.getElementById('flow-count').textContent = `${questions.length} question${questions.length !== 1 ? 's' : ''}`;
   updateContactDesc();
   runValidation();
 }
