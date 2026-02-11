@@ -4256,6 +4256,30 @@ document.addEventListener('click', (e) => {
   }
 });
 
+// ─── KEYBOARD SHORTCUTS ───
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    // Close editor overlay if open
+    const editorOverlay = document.getElementById('editor-overlay');
+    if (editorOverlay && editorOverlay.classList.contains('open')) {
+      closeEditor();
+      return;
+    }
+    // Close preview if open
+    const previewOverlay = document.getElementById('preview-overlay');
+    if (previewOverlay && previewOverlay.classList.contains('open')) {
+      closePreview();
+      return;
+    }
+    // Close type picker if open
+    const typePicker = document.getElementById('type-picker-overlay');
+    if (typePicker && typePicker.classList.contains('open')) {
+      closeTypePicker();
+      return;
+    }
+  }
+});
+
 // ─── BRANCH PREVIEW HOVER ───
 const branchPreview = document.getElementById('branch-preview');
 let branchHoverTimeout = null;
