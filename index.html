@@ -2755,8 +2755,8 @@ textarea.editor-input {
         Flow
       </button>
       <button class="mode-tab" data-mode="audience" onclick="switchMode('audience')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Audience
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Simulate
       </button>
       <button class="mode-tab" data-mode="design" onclick="switchMode('design')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M17 2H7a5 5 0 0 0-5 5v10a5 5 0 0 0 5 5h10a5 5 0 0 0 5-5V7a5 5 0 0 0-5-5Z"/><path d="M2 12h20"/></svg>
@@ -2789,7 +2789,6 @@ textarea.editor-input {
             <svg class="pinned-card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
           </div>
           <div class="pinned-card-chips">
-            <span class="chip chip-everyone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Everyone</span>
             <span class="chip chip-required">Always first</span>
           </div>
         </div>
@@ -2810,7 +2809,6 @@ textarea.editor-input {
           </div>
           <div class="rsvp-detail" id="rsvp-detail">
             <div class="pinned-card-chips">
-              <span class="chip chip-everyone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Everyone</span>
               <span class="chip chip-required">Required</span>
             </div>
           </div>
@@ -3774,7 +3772,7 @@ function addQuestion(type) {
   setTimeout(() => openEditor(q.id), 200);
 }
 
-// ─── AUDIENCE PANEL ───
+// ─── PATH SIMULATOR ───
 function updateVisMap() {
   const body = document.getElementById('vis-map-body');
 
